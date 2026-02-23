@@ -1,29 +1,39 @@
 'use client'
 
 import { months } from "@/app/utils/months";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaArrowRight } from "react-icons/fa";
 import { FaArrowLeft } from "react-icons/fa";
+import { ListViewer } from "./list-viewer";
+import { ExpensesCardProps } from "@/app/utils/interfaces";
+import { redirect } from "next/navigation";
 
+export let Despesas: ExpensesCardProps[] = [
+    {
+        id: 'a824e078-8ee6-4ce6-a133-6f5cadb4',
+        categoria: 'teste',
+        data: '25/02/2026',
+        descricao: 'testandi',
+        valor: 55.99,
+        status: 'topay'
+    }
+
+]
 
 export function HeaderActions() {
 
-    let obj = {
-        id: 'Janeiro/2026',
-            content: {
-                tipo: "saude",
-                valor: 3414
-            }
-    }
-
-
     const [date, setDate] = useState(new Date())
 
+    const [todasDespesas, setTodasDespesas] = useState<ExpensesCardProps[]>(Despesas)
+
+    const [despesasMes, setDespesasMes] = useState<ExpensesCardProps[]>([])
+
     const year = date.getFullYear()
-    const monthName = `${months[date.getMonth()]}/${year}` 
-    
+
+    let monthName = `${months[date.getMonth()]}/${year}`
 
     function nextMonth() {
+
         setDate(prev => {
             const newDate = new Date(prev)
             newDate.setMonth(prev.getMonth() + 1)
@@ -32,6 +42,8 @@ export function HeaderActions() {
     }
 
     function prevMonth() {
+
+
         setDate(prev => {
             const newDate = new Date(prev)
             newDate.setMonth(prev.getMonth() - 1)
@@ -39,22 +51,66 @@ export function HeaderActions() {
         })
     }
 
+    function update() {
+        const formatedDate = date.toLocaleDateString('pt-br', {
+            month: '2-digit',
+            year: 'numeric'
+        })
+
+
+        let filterDespesas = todasDespesas.filter((v) => {
+            let [, mes, ano] = v.data.split('/')
+            let resultado = `${mes}/${ano}`
+
+
+            return formatedDate == resultado
+        })
+
+
+        setDespesasMes(filterDespesas)
+
+    }
+
+    function addExpenses(data: ExpensesCardProps) {
+        const newList = [...todasDespesas, data]
+        setTodasDespesas(newList)
+        redirect('/')
+    }
+
+    function updateExpenses(id: string) {
+    // console.log(id);
+    
+     const updated = Despesas.map((value) => {
+           return value.id == id ? { ...value, status: 'pay' } : value
+       })
+   
+}
+
+    useEffect(() => {
+
+        update()
+
+    }, [monthName, todasDespesas])
+
     return (
-        <div className="flex justify-between items-center p-5 gap-5 h-28 bg-linear-to-r from-slate-800 to-slate-900 w-full text-white [&_span]:cursor-pointer">
-            <span onClick={() => prevMonth()}><FaArrowLeft /></span>
-
-            <div>
-                <div className="flex justify-center text-xl">
-                    <h4>{monthName}</h4>
+        <>
+            <div className="sticky top-0 flex justify-between items-center p-5 gap-5 bg-linear-to-r from-slate-800 to-slate-900 w-full text-white [&_span]:cursor-pointer">
+                <span onClick={() => prevMonth()}><FaArrowLeft /></span>
+                <div>
+                    <div className="flex justify-center text-xl">
+                        <h4>{monthName}</h4>
+                    </div>
+                    <div className="flex flex-col items-center">
+                        <h3 className="text-sm">Total despesas:</h3>
+                        <h4>R$ 1.984,85</h4>
+                    </div>
                 </div>
-                <div className="flex flex-col items-center">
-                    <h3 className="text-sm">Total despesas:</h3>
-                    <h4>R$ 1.984,85</h4>
-                </div>
+                <span onClick={() => nextMonth()}><FaArrowRight /></span>
             </div>
-
-            <span onClick={() => nextMonth()}><FaArrowRight /></span>
-        </div>
+            <div>
+                <ListViewer  data={despesasMes} />
+            </div>
+        </>
 
     )
 }

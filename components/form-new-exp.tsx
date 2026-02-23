@@ -10,14 +10,11 @@ import {
     SelectTrigger,
     SelectValue
 } from "./ui/select";
-import { setDate } from "date-fns";
-import { ChevronDownIcon, Calendar } from "lucide-react";
-import { format } from "node:path";
-import { Popover } from "radix-ui";
-import { PopoverTrigger, PopoverContent } from "./ui/popover";
+
 import { useState } from "react";
-import { Field, FieldError, FieldLabel } from "./ui/field";
-import { months } from "@/app/utils/months";
+import { Field, FieldLabel } from "./ui/field";
+
+import { ExpensesCardProps } from "@/app/utils/interfaces";
 
 
 
@@ -32,7 +29,7 @@ const categorias = [
 
 
 export function FormNewExp() {
-    const [date, setDate] = useState<Date>()
+    // const [date, setDate] = useState<Date>()
 
     const [categoria, setCategoria] = useState('')
     const [descricao, setDescricao] = useState('')
@@ -42,17 +39,31 @@ export function FormNewExp() {
 
     function createUser(event: React.SubmitEvent) {
         event.preventDefault()
-        const dateInst = new Date(data)
 
-       const despesa = {
-        group: `${months[dateInst.getMonth()]}/${dateInst.getFullYear()}`,
-        categoria,
-        descricao,
-        valor
-       }
-        
+        // Resolve o bug de um dia a menos no Date
+        const [year, month, day] = data.split("-").map(Number)
+
+        const dateInst = new Date(year, month - 1, day)
+
+        const formatedDate = dateInst.toLocaleDateString('pt-br')
+
+
+        // Objeto da despesa
+        const despesa:ExpensesCardProps = {
+            id: crypto.randomUUID(),
+            categoria,
+            descricao,
+            valor: Number(valor),
+            data: formatedDate,
+            status: 'topay'
+
+        }
+
         console.log(despesa);
         
+        // addExpenses(despesa)
+
+
     }
 
     return (
@@ -86,7 +97,7 @@ export function FormNewExp() {
             <Field>
                 <FieldLabel>Valor:</FieldLabel>
 
-                <Input  onChange={(value) => setValor(value.target.value)}  type="number" placeholder="Valor" step={0.01} />
+                <Input onChange={(value) => setValor(value.target.value)} type="number" placeholder="Valor" step={0.01} />
 
             </Field>
 
