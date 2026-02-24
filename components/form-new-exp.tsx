@@ -1,4 +1,4 @@
-import { NodeEventTarget } from "node:events";
+
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import {
@@ -15,6 +15,11 @@ import { useState } from "react";
 import { Field, FieldLabel } from "./ui/field";
 
 import { ExpensesCardProps } from "@/app/utils/interfaces";
+import { useExpenseStore } from "@/app/store/ExpensesStore";
+import { redirect } from "next/navigation";
+import { toast } from "sonner";
+import { v4 as uuid } from "uuid"
+
 
 
 
@@ -36,6 +41,8 @@ export function FormNewExp() {
     const [valor, setValor] = useState('')
     const [data, setData] = useState('')
 
+    const store = useExpenseStore()
+
 
     function createUser(event: React.SubmitEvent) {
         event.preventDefault()
@@ -50,7 +57,7 @@ export function FormNewExp() {
 
         // Objeto da despesa
         const despesa:ExpensesCardProps = {
-            id: crypto.randomUUID(),
+            id: uuid(),
             categoria,
             descricao,
             valor: Number(valor),
@@ -59,9 +66,11 @@ export function FormNewExp() {
 
         }
 
-        console.log(despesa);
+        // console.log(despesa);
         
-        // addExpenses(despesa)
+        store.addExpenses(despesa)
+        toast.success('Adicionado com sucesso!')
+        redirect('/')
 
 
     }

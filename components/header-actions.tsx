@@ -6,7 +6,7 @@ import { FaArrowRight } from "react-icons/fa";
 import { FaArrowLeft } from "react-icons/fa";
 import { ListViewer } from "./list-viewer";
 import { ExpensesCardProps } from "@/app/utils/interfaces";
-import { redirect } from "next/navigation";
+import { useExpenseStore } from "@/app/store/ExpensesStore";
 
 export let Despesas: ExpensesCardProps[] = [
     {
@@ -24,9 +24,9 @@ export function HeaderActions() {
 
     const [date, setDate] = useState(new Date())
 
-    const [todasDespesas, setTodasDespesas] = useState<ExpensesCardProps[]>(Despesas)
-
     const [despesasMes, setDespesasMes] = useState<ExpensesCardProps[]>([])
+
+    const store = useExpenseStore()
 
     const year = date.getFullYear()
 
@@ -58,7 +58,7 @@ export function HeaderActions() {
         })
 
 
-        let filterDespesas = todasDespesas.filter((v) => {
+        let filterDespesas = store.expenses.filter((v) => {
             let [, mes, ano] = v.data.split('/')
             let resultado = `${mes}/${ano}`
 
@@ -69,12 +69,6 @@ export function HeaderActions() {
 
         setDespesasMes(filterDespesas)
 
-    }
-
-    function addExpenses(data: ExpensesCardProps) {
-        const newList = [...todasDespesas, data]
-        setTodasDespesas(newList)
-        redirect('/')
     }
 
     function updateExpenses(id: string) {
@@ -90,7 +84,7 @@ export function HeaderActions() {
 
         update()
 
-    }, [monthName, todasDespesas])
+    }, [monthName, store.expenses])
 
     return (
         <>
