@@ -24,7 +24,10 @@ export function ExpensesCard(props: ExpensesCardProps) {
     }
 
     return (
-        <div className={`flex flex-col p-2 w-[90%] h-auto ${props.status == 'topay' ? 'bg-gray-800' : 'bg-emerald-950'} rounded-xl`}>
+        <div className={`flex flex-col p-2 w-[90%] h-auto
+         ${props.status == 'topay' ? 'bg-gray-800' : 'bg-emerald-950'} rounded-xl
+         lg:w-87.5 transition-all duration-1000
+         `}>
             <h1>{props.descricao}</h1>
             <div className="flex items-center gap-2">
                 <BiSolidCategoryAlt size={10} className="text-gray-400" />

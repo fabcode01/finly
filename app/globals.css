@@ -128,4 +128,10 @@
 
 *{
   user-select: none;
+   /* -webkit-tap-highlight-color: transparent; */
+}
+
+
+svg:focus{
+  outline: none;
 }

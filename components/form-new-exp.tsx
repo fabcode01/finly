@@ -24,17 +24,16 @@ import { v4 as uuid } from "uuid"
 
 
 const categorias = [
-    { nome: 'Moradia', value: 'moradia' },
-    { nome: 'Alimentação', value: 'alimentacao' },
-    { nome: 'Transporte', value: 'transporte' },
-    { nome: 'Contas', value: 'contas' },
-    { nome: 'Lazer', value: 'lazer' },
-    { nome: 'Saúde', value: 'saude' },
+    { nome: 'Moradia', value: 'Moradia' },
+    { nome: 'Alimentação', value: 'Alimentação' },
+    { nome: 'Transporte', value: 'Transporte' },
+    { nome: 'Contas', value: 'Contas' },
+    { nome: 'Lazer', value: 'Lazer' },
+    { nome: 'Saúde', value: 'Saúde' },
 ]
 
 
 export function FormNewExp() {
-    // const [date, setDate] = useState<Date>()
 
     const [categoria, setCategoria] = useState('')
     const [descricao, setDescricao] = useState('')
@@ -76,7 +75,7 @@ export function FormNewExp() {
     }
 
     return (
-        <form className="flex flex-col gap-5  text-white w-2/3" onSubmit={(e) => createUser(e)}>
+        <form className="flex flex-col gap-5  text-white w-2/3 max-w-150" onSubmit={(e) => createUser(e)}>
 
             <Field>
                 <FieldLabel>
