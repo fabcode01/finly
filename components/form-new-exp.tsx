@@ -98,20 +98,20 @@ export function FormNewExp() {
 
             <Field>
                 <FieldLabel>Descrição:</FieldLabel>
-                <Input onChange={(value) => setDescricao(value.target.value)} type="text" placeholder="Descrição" />
+                <Input onChange={(value) => setDescricao(value.target.value)} type="text" placeholder="Descrição" required/>
 
             </Field>
 
             <Field>
                 <FieldLabel>Valor:</FieldLabel>
 
-                <Input onChange={(value) => setValor(value.target.value)} type="number" placeholder="Valor" step={0.01} />
+                <Input required onChange={(value) => setValor(value.target.value)} type="number" placeholder="Valor" step={0.01} />
 
             </Field>
 
             <Field>
                 <FieldLabel>Vencimento:</FieldLabel>
-                <Input onChange={value => setData(value.target.value)} name="date" type="date" />
+                <Input required onChange={value => setData(value.target.value)} name="date" type="date" />
             </Field>
 
 
