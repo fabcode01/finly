@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { ExpensesCardProps } from "../utils/interfaces";
 import { v4 as uuid } from "uuid";
+import { createJSONStorage, persist } from "zustand/middleware";
 
 
 type ExpenseStore = {
@@ -10,36 +11,30 @@ type ExpenseStore = {
     deleteExpenses: (id: string) => void
 }
 
-export const useExpenseStore = create<ExpenseStore>((set) => ({
-    expenses: [{
-        id: uuid(),
-        categoria: 'alimentacao',
-        data: '23/02/2026',
-        descricao: 'mcdonalds',
-        status: 'topay',
-        valor: 55
-    }],
+export const useExpenseStore = create<ExpenseStore>()(
+    persist(
+        (set) => ({
+            expenses: [],
 
-    addExpenses: (data: ExpensesCardProps) => set((state) => ({
-        expenses: [...state.expenses, {
-            id: uuid(),
-            categoria: data.categoria,
-            data: data.data,
-            descricao: data.descricao,
-            status: data.status,
-            valor: data.valor
-        }]
-    })),
+            addExpenses: (data) => set((state) => ({
+                    expenses: [...state.expenses,{...data,}],
+                })),
 
-    updateExpenses: (id: string) => set((state) => ({
-        expenses: state.expenses.map((value) => {
-            return value.id === id ? { ...value, status: 'pay' } : value
-        })
-    })),
+            updateExpenses: (id: string) =>
+                set((state) => ({
+                    expenses: state.expenses.map((value) =>
+                        value.id === id ? { ...value, status: "pay" } : value
+                    ),
+                })),
 
-    deleteExpenses: (id: string) => set((state) => ({
-        expenses: state.expenses.filter((value) => value.id != id)
-
-    }))
-
-}))
+            deleteExpenses: (id) =>
+                set((state) => ({
+                    expenses: state.expenses.filter((value) => value.id !== id),
+                })),
+        }),
+        {
+            name: "expenses",
+            storage: createJSONStorage(() => localStorage),
+        }
+    )
+)

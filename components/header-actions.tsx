@@ -25,6 +25,7 @@ export function HeaderActions() {
     const [date, setDate] = useState(new Date())
 
     const [despesasMes, setDespesasMes] = useState<ExpensesCardProps[]>([])
+    const [totalMes, setTotalMes] = useState<string>('')
 
     const store = useExpenseStore()
 
@@ -66,25 +67,37 @@ export function HeaderActions() {
             return formatedDate == resultado
         })
 
+        let total = 0
+        filterDespesas.forEach((v) => {
+            total += v.valor
+        })
 
+        const totalReal = new Intl.NumberFormat('pt-br', {
+            style: 'currency',
+            currency: 'BRL',
+        }).format(total)
+
+        setTotalMes(totalReal)
         setDespesasMes(filterDespesas)
 
     }
 
     function updateExpenses(id: string) {
-    // console.log(id);
-    
-     const updated = Despesas.map((value) => {
-           return value.id == id ? { ...value, status: 'pay' } : value
-       })
-   
-}
+        // console.log(id);
+
+        const updated = Despesas.map((value) => {
+            return value.id == id ? { ...value, status: 'pay' } : value
+        })
+
+    }
 
     useEffect(() => {
 
         update()
 
     }, [monthName, store.expenses])
+
+
 
     return (
         <>
@@ -96,13 +109,13 @@ export function HeaderActions() {
                     </div>
                     <div className="flex flex-col items-center">
                         <h3 className="text-sm">Total despesas:</h3>
-                        <h4>R$ 1.984,85</h4>
+                        <h4>{totalMes}</h4>
                     </div>
                 </div>
                 <span onClick={() => nextMonth()}><FaArrowRight /></span>
             </div>
             <div>
-                <ListViewer  data={despesasMes} />
+                <ListViewer data={despesasMes} />
             </div>
         </>
 
